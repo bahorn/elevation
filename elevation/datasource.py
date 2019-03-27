@@ -144,10 +144,13 @@ def seed(cache_dir=CACHE_DIR, product=DEFAULT_PRODUCT, bounds=None, max_download
     """
     datasource_root, spec = ensure_setup(cache_dir, product)
     ensure_tiles_names = list(spec['tile_names'](*bounds))
+    # Removing as this blocks downloads of even reasonably sized regions
+    # (i.e, Northern Ireland)
+    # Would be better to implement a delay, or just enforce this per source...
     # FIXME: emergency hack to enforce the no-bulk-download policy
-    if len(ensure_tiles_names) > max_download_tiles:
-        raise RuntimeError("Too many tiles: %d. Please consult the providers' websites "
-                           "for how to bulk download tiles." % len(ensure_tiles_names))
+    #if len(ensure_tiles_names) > max_download_tiles:
+    #    raise RuntimeError("Too many tiles: %d. Please consult the providers' websites "
+    #                       "for how to bulk download tiles." % len(ensure_tiles_names))
 
     with util.lock_tiles(datasource_root, ensure_tiles_names):
         ensure_tiles(datasource_root, ensure_tiles_names, **kwargs)
